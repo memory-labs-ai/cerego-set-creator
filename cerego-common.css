@@ -1,0 +1,308 @@
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both
+}
+
+body {
+  width: 200px;
+  height: 100px;
+}
+
+#cerego_overlay {
+    background: none repeat scroll 0 0 #efefef;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2000px;
+    z-index: 100
+}
+
+#cerego_set_creator * {
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    font-family: "proxima-nova", "Helvetica", sans-serif;
+}
+
+#cerego_set_creator a {
+    color: #2890D4;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+    cursor: pointer
+}
+
+#cerego_set_creator {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 3px 3px 2px 5px;
+    margin: 0;
+    font-family: "proxima-nova", "Helvetica", sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #efefef;
+    z-index: 100000;
+}
+
+#cerego_set_creator .toolbar_wrapper {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center
+}
+
+#cerego_set_creator .toolbar_wrapper>* {
+    -webkit-box-flex: 1 0 auto;
+    -moz-box-flex: 1 0 auto;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto
+}
+
+#cerego_set_creator select {
+    border: 1px solid #AAA;
+    margin-left: 6px;
+    float: left;
+    margin-top: 3px
+}
+
+#cerego_set_creator option {
+    padding: 1px 5px
+}
+
+#cerego_set_creator .select_wrapper {
+    margin: 6px
+}
+
+#cerego_set_creator.bookmarklet_window .site-header--logo {
+    position: absolute;
+    display: block;
+    top: 3px;
+    left: 10px;
+    width: 121px;
+    height: 27px
+}
+
+#cerego_set_creator .site-header--logo {
+    width: 121px
+}
+
+#cerego_set_creator .site-header--logo-htext {
+    margin-top: 3px
+}
+
+#cerego_set_creator.bookmarklet_window .site-header--logo-icon,
+#cerego_set_creator .site-header--logo-icon {
+    position: absolute;
+    width: 41px;
+    height: 27px;
+    left: 18px;
+    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/logos-sebf4eac582-fb1459e34e8604c7a322cda936533fa8.png) 0 -330px
+}
+
+#cerego_set_creator.bookmarklet_window .site-header--logo-htext,
+#cerego_set_creator .site-header--logo-htext {
+    position: absolute;
+    width: 80px;
+    height: 22px;
+    left: 69px;
+    top: 3px;
+    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/logos-sebf4eac582-fb1459e34e8604c7a322cda936533fa8.png) 0 -1119px
+}
+
+#cerego_set_creator a {
+    color: #2890D4;
+    text-decoration: none
+}
+
+#cerego_set_creator a:hover {
+    color: #1D6BAB;
+    text-decoration: underline
+}
+
+#cerego_set_creator .button {
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #EF6338;
+    border-color: #EF6338;
+    box-shadow: 0 4px 0px 0px #BC411B;
+    color: #fff;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+#cerego_set_creator .button:hover {
+    box-shadow: 0 4px 0px 0px #f38867;
+    text-decoration: none;
+    background-color: #f38867;
+    border-color: #f38867;
+    color: #FFF
+}
+
+#cerego_set_creator .button.disabled:hover,
+#cerego_set_creator .button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none
+}
+
+#cerego_set_creator .button.large {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.19922) 1px 2px 2px;
+    -moz-box-shadow: rgba(0, 0, 0, 0.19922) 1px 2px 2px;
+    box-shadow: rgba(0, 0, 0, 0.19922) 1px 2px 2px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 25px
+}
+
+#cerego_set_creator .button.small {
+    padding: 5px 10px 5px;
+    font-weight: normal;
+    height: 12px
+}
+
+#cerego_set_creator .status {
+    height: 16px
+}
+
+#cerego_set_creator label {
+    display: block;
+    padding: 6px;
+    float: left
+}
+
+#cerego_set_creator .toolbar_message,
+#cerego_set_creator .toolbar_error {
+    padding: 4px 0;
+    color: #F00;
+    font-weight: bold
+}
+
+#cerego_set_creator .toolbar_message {
+    color: #333
+}
+
+#cerego_set_creator .toolbar_message.warning {
+    color: #F00
+}
+
+#cerego_set_creator .toolbar_close {
+    position: absolute;
+    right: 10px;
+    width: 25px;
+    height: 16px;
+    padding: 4px 0 2px;
+    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/bookmarklet/cross-95f09b85cdf81e8ea9b9ea2a4babac52.png) no-repeat center center
+}
+
+#cerego_set_creator.bookmarklet_window {
+    position: fixed;
+    display: block;
+    top: 10px;
+    left: 50px;
+    z-index: 99999;
+    background-color: #FFF;
+    -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    line-height: 14px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border: 5px solid #B2B2B2;
+    padding: 0
+}
+
+#cerego_set_creator.bookmarklet_window,
+#cerego_set_creator.bookmarklet_window iframe {
+    width: 960px
+}
+
+#cerego_set_creator.bookmarklet_window .header {
+    height: 30px;
+    line-height: 29px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom: 1px solid #CCC;
+    background-color: #EFEFEF
+}
+
+#cerego_set_creator.bookmarklet_window .site-header {
+    font-size: 22px;
+    text-align: center;
+    padding: 4px
+}
+
+#cerego_set_creator.bookmarklet_window .header .close {
+    float: right;
+    width: 25px;
+    height: 16px;
+    padding: 4px 0 2px;
+    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/bookmarklet/cross-95f09b85cdf81e8ea9b9ea2a4babac52.png) no-repeat center center
+}
+
+#cerego_set_creator.bookmarklet_window .header .content_title {
+    font-size: 16px;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #333;
+    border: none;
+    line-height: 22px;
+    text-align: center
+}
+
+#cerego_set_creator.bookmarklet_window .hidden {
+    display: none
+}
+
+#cerego_set_creator.bookmarklet_window .iframe_loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 960px;
+    height: 150px;
+    margin: 150px auto 0;
+    color: #666;
+    text-align: center
+}
+
+#cerego_set_creator.bookmarklet_window .iframe_loading p {
+    font-size: 20px;
+    text-align: center
+}
+
+#cerego_set_creator.bookmarklet_window .iframe_loading span {
+    width: 128px;
+    height: 15px;
+    margin: 10px auto 0;
+    display: block;
+    background: transparent url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/bookmarklet/horizontal_spinner-8e6c01a465c237aa1448aa6b61802b31.gif) no-repeat center center
+}
+
+#cerego_set_creator.bookmarklet_window .iframe_loading p.warning {
+    color: #F00;
+    margin: 10px 0;
+    font-size: 12px
+}

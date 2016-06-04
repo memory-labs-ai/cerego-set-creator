@@ -1,0 +1,30 @@
+{
+  "name": "Cerego Set Creator",
+  "description": "Create Cerego sets from HTML tables",
+  "version": "0.1",
+  "permissions": [
+    "activeTab",
+    "declarativeContent"
+  ],
+  "browser_action": {
+    "default_title": "Cerego Set Creator",
+    "default_popup": "window.html"
+  },
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://www.google.com/*"],
+      "js": [
+        "jquery.js",
+        "table_loader.js",
+        "data_loader.js"
+      ]
+    }
+  ],
+  "icons": { "16": "cerego-16.png", "128": "cerego-128.png" }
+}

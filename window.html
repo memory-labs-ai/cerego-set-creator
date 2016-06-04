@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" media="screen" href="cerego-common.css">
+    <script src="jquery.js"></script>
+    <script src="table_loader.js"></script>
+    <script src="data_loader.js"></script>
+  </head>
+  <body>
+    <div id="cerego_set_creator">
+      <a class="button small button" id="cerego_track_tables" status="off" onclick="Cerego.Tableloader.toggleTableTracking()">Start table highlight</a>
+      <div class="label">Max number of items</div>
+      <select id="cerego_max_count">
+        <option value="10" selected=true>10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <span class="status"></span>
+    </div>
+  </body>
+</html>
