@@ -4,11 +4,6 @@
     clear: both
 }
 
-body {
-  width: 200px;
-  height: 100px;
-}
-
 #cerego_overlay {
     background: none repeat scroll 0 0 #efefef;
     position: fixed;
@@ -236,8 +231,8 @@ body {
 }
 
 #cerego_set_creator.bookmarklet_window,
-#cerego_set_creator.bookmarklet_window iframe {
-    width: 960px
+#cerego.bookmarklet_window iframe {
+    width: 960px;
 }
 
 #cerego_set_creator.bookmarklet_window .header {

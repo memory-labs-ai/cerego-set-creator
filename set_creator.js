@@ -1,5 +1,7 @@
+console.log("hello world");
+
 (function() {
-    console.log("loading table_loader");
+    console.log("loading set_creator");
     var cleanCellContent, closeBookmarklet, getFirstParentTable, parseTableData, parseTableHeaders, showBookmarkletWindow, toggleTableTracking, trackTables, untrackTables;
     window.Cerego || (window.Cerego = {}), showBookmarkletWindow = function(settings, callback) {
         var height, html, innerHeightOffset, left;
@@ -62,38 +64,36 @@
         return target = event.target || event.srcElement, tables = $(target).parents("table"),
         $(tables[0]);
     }, trackTables = function() {
-        var previousBorderCSS, trackedTable;
-        return $("#cerego_track_tables").attr("status", "on").html("Stop table highlight"),
-        $("body").css("cursor", "pointer"), trackedTable = null, previousBorderCSS = null,
-        $(document).bind("mouseover.tables", function(event) {
-            return trackedTable = getFirstParentTable(event), trackedTable.length > 0 ? (previousBorderCSS = trackedTable.css("border"),
-            trackedTable.css({
-                border:"2px solid red"
-            })) :void 0;
-        }), $(document).click(function() {
-            return null != trackedTable && trackedTable.length > 0 ? parseTableData(trackedTable) :void 0;
-        });
+        console.log("tracking tables now");
+        $("#cerego_track_tables").attr("status", "on").html("Stop table highlight");
+        chrome.tabs.executeScript(null, {file:"jquery.js"});
+        chrome.tabs.executeScript(null, {file:"table_loader.js"});
+        chrome.tabs.insertCSS(null, {file:"cerego-common.css"});
+        return true;
     }, untrackTables = function() {
         return $("#cerego_track_tables").attr("status", "off").html("Start table highlight"),
         $(document).unbind("mouseover.tables"), $("body").css("cursor", "default");
     }, toggleTableTracking = function() {
-        console.log("tracking tables 2");
+        console.log("toggle tracking tables");
+        console.log("off" === $("#cerego_track_tables").attr("status"));
         return "off" === $("#cerego_track_tables").attr("status") ? trackTables() :untrackTables();
     }, closeBookmarklet = function() {
         return $("#cerego_set_creator").remove(), $("#cerego_overlay").remove();
-    }, CeregoTableLoader = {
-        trackTables:trackTables,
+    }, CeregoSetCreator = {
         toggleTableTracking:toggleTableTracking,
         closeBookmarklet:closeBookmarklet
     };
 }).call(this);
 
-CeregoTableLoader.trackTables();
-console.log("loaded");
+
 // window.addEventListener()
 //  onclick="Cerego.Tableloader.toggleTableTracking()"
 
+
+
 //add button listeners after dom is loaded
-// document.addEventListener('DOMContentLoaded', function () {
-//   document.getElementById('cerego_track_tables').addEventListener('click', CeregoTableLoader.toggleTableTracking);
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById('cerego_track_tables').addEventListener('click', CeregoSetCreator.toggleTableTracking);
+});
+
 // });

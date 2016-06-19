@@ -4,7 +4,8 @@
   "version": "0.1",
   "permissions": [
     "activeTab",
-    "declarativeContent"
+    "declarativeContent",
+    "tabs", "http://*/*", "https://*/*"
   ],
   "browser_action": {
     "default_title": "Cerego Set Creator",
@@ -21,7 +22,7 @@
       "matches": ["http://www.google.com/*"],
       "js": [
         "jquery.js",
-        "table_loader.js",
+        "set_creator.js",
         "data_loader.js"
       ]
     }
