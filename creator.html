@@ -1,0 +1,89 @@
+<div id="importing_items" class="importing_items clearfix">
+  <div class="course_loading">
+    Creating Set
+  </div>
+  <div class="item_counter">
+    Adding items
+  </div>
+  <span id="upload_count"></span>
+  <div class="import_progress_bar in_progress">
+    <span class="progress_indicator"></span>
+  </div>
+</div>
+<div id="cerego" class="data_loader">
+  <div class="form_fields clearfix">
+    <ul class="set_creation_tab_bar">
+      <li class="set_creation_tab active" id="new_set">
+        New Set
+      </li>
+      <li class="set_creation_tab" id="existing_set">
+        Existing Set
+      </li>
+      <br />
+    </ul>
+    <div id="new_set_details" class="set_creation_details">
+      <label class="block">Set Name</label><input class="text_field" placeholder="Enter name of set here..." type="text" value="List of dog breeds - Wikipedia, the free encyclopedia" name="course[name]" id="course_name" /><input type="hidden" name="source_url" id="source_url" value="https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FList_of_dog_breeds" />
+    </div>
+    <div id="existing_set_details" class="set_creation_details">
+      <label class="block">Set ID</label><input class="text_field" type="text" name="course[id]" id="course_id" /><input type="hidden" name="source_url" id="source_url" value="https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FList_of_dog_breeds" />
+    </div>
+    <div id="course_link" class="hidden">
+      <label>Your set has been saved successfully:</label><a target="_blank" class="top" href="">Set Details Page</a>
+    </div>
+    <fieldset class="field_assignments clearfix">
+      <div id="item_field_selector" class="item_field_selector clearfix">
+        <div class="cue wrapper">
+          <div class="base cue_base">
+            <div class="field_heading">
+              <div class="fa fa-anchor field_icon"></div>
+              <span class="identifier">Anchor</span>
+            </div>
+            <div class="content"></div>
+            <div class="field_tip">
+              1. Pick the column with the main concept you would like to learn
+            </div>
+          </div>
+          <select id="cue_selections" field="cue"></select>
+        </div>
+        <div class="response wrapper">
+          <div class="base response_base">
+            <div class="field_heading">
+              <div class="fa fa-link field_icon"></div>
+              <span class="identifier">Association</span>
+            </div>
+            <div class="content"></div>
+            <div class="field_tip">
+              2. Pick another column with a key fact about that concept
+            </div>
+          </div>
+          <select id="response_selections" field="response"></select>
+        </div>
+        <div class="annotation wrapper">
+          <div class="base annotation_base">
+            <div class="field_heading">
+              <div class="fa fa-pencil field_icon"></div>
+              <span class="identifier">Annotation</span>
+            </div>
+            <div class="content"></div>
+            <div class="field_tip">
+              3. (optional) Pick a column with supplementary information
+            </div>
+          </div>
+          <select id="annotation_selections" field="annotation"></select>
+        </div>
+      </div>
+    </fieldset>
+    <div class="form_actions clearfix">
+      <div class="actions">
+        Row count:<select id="select_items_count">
+          <option value="10" selected=true>10</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <a class="button large disabled" id="create_course" no_items_message="Please select at least one item in the list below." hint_cue_and_response="Please set the anchor and association fields." hint_cue="Please set the anchor field" hint_response="Please set the association field" href="#create_course">create set</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+</script>

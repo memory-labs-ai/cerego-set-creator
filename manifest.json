@@ -1,7 +1,7 @@
 {
   "name": "Cerego Set Creator",
   "description": "Create Cerego sets from HTML tables",
-  "version": "0.1",
+  "version": "0.0.1",
   "permissions": [
     "activeTab",
     "declarativeContent",
@@ -27,5 +27,11 @@
       ]
     }
   ],
-  "icons": { "16": "cerego-16.png", "128": "cerego-128.png" }
+  "icons": { "16": "cerego-16.png", "128": "cerego-128.png" },
+  "web_accessible_resources": [
+      "creator.html",
+      "cerego-creator.css",
+      "jquery.js",
+      "data_loader.js"
+    ]
 }

@@ -1,5 +1,3 @@
-console.log("hello world");
-
 (function() {
     console.log("loading set_creator");
     var cleanCellContent, closeBookmarklet, getFirstParentTable, parseTableData, parseTableHeaders, showBookmarkletWindow, toggleTableTracking, trackTables, untrackTables;
@@ -85,15 +83,7 @@ console.log("hello world");
     };
 }).call(this);
 
-
-// window.addEventListener()
-//  onclick="Cerego.Tableloader.toggleTableTracking()"
-
-
-
 //add button listeners after dom is loaded
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('cerego_track_tables').addEventListener('click', CeregoSetCreator.toggleTableTracking);
 });
-
-// });

@@ -101,7 +101,10 @@ $(document).ready(function(){
     $.ajax({
       type: "GET",
       dataType: 'json',
-      url: "https://cerego.com/configuration"
+      url: "https://cerego.com/configuration",
+      xhrFields: {
+        withCredentials: true
+      }
     }).done(function(data, textStatus, jqXHR) {
       var token = data.token;
       CeregoApi.apiKey(token);
@@ -109,9 +112,6 @@ $(document).ready(function(){
       alert("Failure to get configuration, bookmarklet will not work. Are you logged in to https://cerego.com/?");
     });
   })();
-
-
-
 
   var cueItemType, responseItemType, rowIndex, rowCount, cueIndex, responseIndex, annotationIndex,
       hoverTimeout, uploadCancelled, coursePath, outputPath;
@@ -121,126 +121,15 @@ $(document).ready(function(){
       ARTICLE_MAX_DISPLAY_LENGTH = 400;
 
   function initialize(){
-    initializeImageThumbnails();
     initializeFormElements();
     initializeSetCreationSelector();
+    initializeItemCountSelector();
     initializeItemTypeSelector();
-    initializeTableRows();
-    resetAudios();
     resetItemTypeSelector();
     updateCreateCourseButton();
   }
 
-  function initializeImageThumbnails(){
-    // wrapping into a timer so that iframe.load gets triggered earlier
-    setTimeout(function(){
-      $('.table_data tr').each(function(){
-        $(this).addClass('text_record');
-      });
-      $('.table_data td .image img').each(function(){
-        $(this).attr('src', $(this).attr('url'));
-        $(this).parents('tr').first().removeClass('text_record').addClass('image_record');
-      });
-    }, 300);
-
-    // show expanded version of the thumbnail on rollover
-    $('.table_data td .image').hover(
-        function(){
-          var wrapper = this;
-          hoverTimeout = setTimeout(function(){
-            showExpandedThumbnail(wrapper);
-          }, 400);
-        },
-        function(){
-          var wrapper = this;
-          if (hoverTimeout && !$('.expanded', wrapper).is(':visible')){
-            clearTimeout(hoverTimeout)
-          }
-          else {
-            hideExpandedThumbnail(wrapper);
-          }
-        }
-    );
-
-    $('.table_data td .image .counter .previous').click(function(){
-      var wrapper = $(this).parents('.image');
-      selectImage(wrapper, -1);
-      return false;
-    });
-    $('.table_data td .image .counter .next').click(function(){
-      var wrapper = $(this).parents('.image');
-      selectImage(wrapper, 1);
-      return false;
-    });
-  }
-
-  function selectImage(wrapper, step){
-    var images = $('.expanded .full_image', wrapper),
-        current = $('.expanded .active', wrapper),
-        currentIndex = parseInt(images.index(current)),
-        urlHolder = $('input', wrapper),
-        newImage;
-    if (step == 1 && currentIndex == images.length - 1){
-      newImage = $(images.get(0));
-    }
-    else if (step == -1 && currentIndex == 0){
-      newImage = $(images.get(images.length - 1));
-    }
-    else {
-      newImage = $(images.get(currentIndex + step));
-    }
-    current.removeClass('active');
-    newImage.addClass('active');
-    var imageUrl = $('img', newImage).attr('src');
-    urlHolder.val(imageUrl);
-    $('.thumbnail img', wrapper).attr('src', imageUrl);
-    positionFullImage(wrapper);
-  }
-
-  function showExpandedThumbnail(imageWrapper){
-    $('.expanded', imageWrapper).show();
-    positionFullImage(imageWrapper);
-    $('.expanded', imageWrapper).hide().fadeIn(300);
-  }
-
-  function positionFullImage(imageWrapper){
-    $('.expanded', imageWrapper).css({
-      'z-index': 10
-    });
-  }
-
-  function hideExpandedThumbnail(imageWrapper){
-    $('.expanded', imageWrapper).fadeOut(100, function(){
-      $(this).css('z-index', 0);
-    });
-  }
-
   function initializeFormElements(){
-    $('#check_all').click(function(){
-      selectAllValidRows($(this).attr('checked'));
-    });
-
-    $('.table_data tbody tr .check_box').click(function(){
-      updateSelectedCount();
-    });
-
-    $('#reset_fields').click(function(){
-      resetItemTypeSelector();
-      filterRecords();
-      resetAudios();
-      return false;
-    });
-
-    $('#item_field_selector .audio').click(function(){
-      if ($(this).hasClass('disabled')){
-        resetAudios();
-        $(this).removeClass('disabled').html($(this).attr('on_text'));
-      }
-      else {
-        $(this).addClass('disabled').html($(this).attr('off_text'));
-      }
-    });
-
     $('#create_course').click(function(){
       createCourse();
       return false;
@@ -249,54 +138,9 @@ $(document).ready(function(){
     $('#cancel_upload').click(function(){
       cancelUpload();
     });
-
   }
 
   var hovered = null;
-  function initializeTableRows(){
-    $(window).bind('keyup.data_loader', function(event){
-      if (!hovered){ return true }
-      // shift key will trigger the checkbox toggling
-      if (event.keyCode != 16) { return true }
-
-      toggleCheckbox(hovered);
-      selectRow(hovered);
-      return false;
-    });
-
-    $('.table_data tbody tr').hover(
-        function(){
-          $(this).addClass('hover');
-          hovered = $(this);
-        },
-        function(){
-          $(this).removeClass('hover');
-          hovered = null;
-        }
-    );
-
-    $('.table_data tbody tr').click(function(event){
-      if ($(event.target).hasClass('inline')){
-        return false;
-      }
-
-      hideInlineEdit();
-
-      var element = $(event.target);
-      if(!element.is('.check_box')){
-        toggleCheckbox($(element).parents('tr'));
-      }
-      selectRow($(this));
-    });
-
-    $('.table_data tbody tr td .editable').click(function(){
-      $(this).hide();
-      var cell = $(this).parents('td');
-      hideInlineEdit();
-      addInlineEdit(cell);
-      return false;
-    });
-  }
 
   function truncateArticleDisplay(article){
     var text = article.substr(0, ARTICLE_MAX_DISPLAY_LENGTH);
@@ -311,47 +155,6 @@ $(document).ready(function(){
     return text;
   }
 
-  function addInlineEdit(cell){
-    var input = $('.value', cell);
-    cell.append('<textarea class="inline" name="inline_edit">' + input.val() + '</textarea>')
-    $('textarea.inline').bind('keyup mouseup', function(){
-      $('.editable', cell).html(truncateArticleDisplay($(this).val()))
-      input.val($(this).val());
-      return false;
-    })
-  }
-
-  function hideInlineEdit(){
-    if ($('textarea.inline').length > 0) {
-      $('.editable', $('textarea.inline').parents('td')).show();
-      $('textarea.inline').unbind('keyup mouseup');
-      $('textarea.inline').remove();
-    }
-  }
-
-  // this is for times when we try to trigger the select row without actually clicking the checkbox,
-  // e.g. keyboard shortcut or clicking on row itself
-  function toggleCheckbox(row){
-    var checkbox = $('.check_box', row);
-    if (checkbox.attr('checked')) {
-      checkbox.removeAttr('checked');
-    }
-    else {
-      checkbox.attr('checked', true);
-    }
-  }
-
-  function selectRow(row){
-    updateSelectedCount();
-    var checkbox = $('.check_box', row);
-    if (checkbox.attr('checked')){
-      row.addClass('selected');
-    }
-    else {
-      row.removeClass('selected');
-    }
-  }
-
   function initializeSetCreationSelector(){
     $('#new_set, #existing_set').click(function(){
       var value = $(this).attr('id')+'_details';
@@ -362,16 +165,17 @@ $(document).ready(function(){
     });
   }
 
-  function initializeItemTypeSelector(){
-    $('#cue_selections, #response_selections, #annotation_selections').change(function(){
-      var selected = $('option:selected', this);
-      setItemField($(this).attr('field'), selected.attr('item_type'), selected.text(), selected.val());
+  function initializeItemCountSelector(){
+    rowCount = 10;
+    $("#cerego_max_count").change(function(val){
+      rowCount = val;
     });
   }
 
-  function resetAudios(){
-    $('#item_field_selector .audio').each(function(){
-      $(this).addClass('disabled').html($(this).attr('off_text'));
+  function initializeItemTypeSelector(){
+    $('#cue_selections, #response_selections, #annotation_selections').change(function(){
+      var selected = $('option:selected', this);
+      setItemField($(this).attr('field'), selected.text(), selected.val());
     });
   }
 
@@ -392,13 +196,12 @@ $(document).ready(function(){
     $(id).html('');
     $(id).append('<option value="-1">-- Select a field --</option>');
 
-    $.each(self.fields, function(field){
-      if (this.item_type == 'text' || (this.item_type == 'image' && includeImage)){
-        option = '<option value="' + this.field_index + '" item_type="' + this.item_type + '">' +
-        this.field_name + ' ('+ this.item_type + ')' +
-        '</option>';
-        $(id).append(option);
-      }
+    console.log(self.fields);
+    $.each(self.fields, function(index, field){
+      option = '<option value="' + index + '">' +
+      field +
+      '</option>';
+      $(id).append(option);
     });
   }
 
@@ -415,49 +218,28 @@ $(document).ready(function(){
     $(option).parents('select').change();
   }
 
-  function validRowAt(rowIndex){
-    return $('.table_data tbody tr.valid').eq(rowIndex);
-  }
-
-  function validAndSelectedRows(){
-    return $('.table_data tbody tr.valid .check_box:checked');
-  }
-
-  function validAndSelectedRowAt(rowIndex){
-    return validAndSelectedRows().eq(rowIndex).parents('tr').first();
-  }
-
-  function validAndSelectedCount(){
-    return validAndSelectedRows().length;
-  }
-
-  function updateSelectedCount(){
-    $('.selected_count').html(validAndSelectedCount());
-  }
-
-  function updateRecordCount(){
-    $('#record_count').html($('.table_data tbody tr.valid').length);
-  }
-
   function updateCreateCourseButton(){
-    $('#create_course').toggleClass('disabled', !cueIndex || !responseIndex);
+    $('#create_course').toggleClass('disabled', cueIndex == null || responseIndex == null);
 
     $('#hints').html('');
-    if (!cueIndex && !responseIndex) {
+    if (cueIndex == null && responseIndex == null) {
       $('#hints').html($('#create_course').attr('hint_cue_and_response'));
     }
-    else if (!cueIndex){
+    else if (cueIndex == null){
       $('#hints').html($('#create_course').attr('hint_cue'));
     }
-    else if (!responseIndex){
+    else if (responseIndex == null){
       $('#hints').html($('#create_course').attr('hint_response'));
     }
   }
 
-  function setItemField(itemField, _itemType, fieldName, fieldIndex){
+  function setItemField(itemField, fieldName, fieldIndex){
+    var field_item = self.body[0][fieldIndex];
+    var _itemType = (field_item != null && field_item.img == null) ? "text" : "image";
+
     var field = {
       itemType: _itemType,
-      index: parseInt(fieldIndex) + COLUMN_OFFSET
+      index: parseInt(fieldIndex)
     };
 
     if (fieldName.match(/\[loading/)){
@@ -473,7 +255,6 @@ $(document).ready(function(){
 
     if (itemField == 'cue'){
       cueItemType = field.itemType;
-      resetAudios();
       if (fieldIndex == -1){
         cueIndex = null;
         $('#item_field_selector .cue_base .content').html('');
@@ -486,12 +267,6 @@ $(document).ready(function(){
           $('#item_field_selector .response_base').addClass('untouched');
         }
         cueIndex = field.index;
-        if (field.itemType == 'text'){
-          $('#item_field_selector .cue_audio').click();
-        }
-        else if (field.itemType == 'image'){
-          $('#item_field_selector .response_audio').click();
-        }
       }
     }
     else if (itemField == 'response'){
@@ -507,12 +282,6 @@ $(document).ready(function(){
         }
         $('#item_field_selector .response_base').removeClass('untouched');
         responseIndex = field.index;
-        if (field.itemType == 'text'){
-          $('#item_field_selector .response_audio').click();
-        }
-        else if (field.itemType == 'image'){
-          $('#item_field_selector .cue_audio').click();
-        }
       }
     }
     else if (itemField == 'annotation'){
@@ -535,75 +304,28 @@ $(document).ready(function(){
 
   function filterRecords(){
     updateCreateCourseButton();
-
-    $('.table_data table tbody tr').removeClass('valid invalid');
-    $('.table_data table tbody tr').each(function(){
-      var valid = true,
-          row = $(this);
-      if (cueIndex && dataAtCol(row, cueIndex) == ''){
-        valid = false;
-      }
-      if (valid && responseIndex && dataAtCol(row, responseIndex) == ''){
-        valid = false;
-      }
-      row.addClass(valid ? 'valid' : 'invalid');
-    });
-    updateRecordCount();
-    filterColumns();
   }
 
   function setItemFieldContent(field){
-    var firstRow = validRowAt(0),
-        content;
-    if (cueIndex){
-      content = dataAtCol(firstRow, cueIndex);
+    var content;
+    if (cueIndex != null){
+      content = dataAtCol(0, cueIndex);
       if (cueItemType == 'image'){
         content = '<img src="' + content + '" />';
       }
       $('#item_field_selector .cue_base .content').html(content);
     }
-    if (responseIndex){
-      content = dataAtCol(firstRow, responseIndex);
+    if (responseIndex != null){
+      content = dataAtCol(0, responseIndex);
       if (responseItemType == 'image'){
         content = '<img src="' + content + '" />';
       }
       $('#item_field_selector .response_base .content').html(content);
     }
-    if (annotationIndex){
-      content = dataAtCol(firstRow, annotationIndex);
+    if (annotationIndex != null){
+      content = dataAtCol(0, annotationIndex);
       $('#item_field_selector .annotation_base .content').html(content);
     }
-  }
-
-  function filterColumns(){
-    // if both cue/response have been selected, hide all other columns
-    $('.table_data table').attr('class', '');
-    if (!cueIndex || !responseIndex){
-      return;
-    };
-
-    var selectedFields = [cueIndex, responseIndex]
-    if (annotationIndex){
-      selectedFields.push(annotationIndex);
-    }
-
-    $('.table_data table th').each(function(i){
-      if (selectedFields.indexOf(i + COLUMN_OFFSET) < 0){
-        $('.table_data table').addClass('no' + i);
-      }
-    });
-  }
-
-  function selectAllValidRows(checked){
-    $('.table_data table tbody tr .check_box').attr('checked', false);
-    if (checked){
-      $('.table_data table tbody tr.valid').addClass('selected');
-      $('.table_data table tbody tr.valid .check_box').attr('checked', true);
-    }
-    else {
-      $('.table_data table tbody tr.valid').removeClass('selected');
-    }
-    updateSelectedCount();
   }
 
   function createCourse(){
@@ -611,7 +333,7 @@ $(document).ready(function(){
       return;
     }
 
-    if (validAndSelectedCount() == 0){
+    if (rowCount == 0){
       alert($('#create_course').attr('no_items_message'));
       return;
     }
@@ -650,33 +372,23 @@ $(document).ready(function(){
     showProgress();
     rowIndex = 0;
     uploadCancelled = false;
-    rowCount = validAndSelectedCount();
     uploadItem(set);
   }
 
   function dataAtCol(row, col){
-    var cell = $('td', row).eq(col),
-        content = $('.value', cell).val();
+    var cell = self.body[row][col];
+    var content = cell.img == null ? cell.text : cell.img;
     return content ? content.trim() : '';
   }
 
-  function cueAudioOn(){
-    return !$('#item_field_selector .cue_audio').hasClass('disabled');
-  }
-
-  function responseAudioOn(){
-    return !$('#item_field_selector .response_audio').hasClass('disabled');
-  }
-
   function uploadItem(set){
-    var row = validAndSelectedRowAt(rowIndex);
+    var row = rowIndex;
 
     var data = {
       index:rowIndex,
       total:rowCount,
       cue: {},
-      response: {},
-      authenticity_token:$('#form_authenticity_token').val()
+      response: {}
     };
 
     if (cueItemType == 'text'){
@@ -684,19 +396,12 @@ $(document).ready(function(){
     }
     else if (cueItemType == 'image'){
       data.cue.url = dataAtCol(row, cueIndex);
-      if (responseAudioOn()){
-        data.is_response_sound = true;
-      }
     }
     if (responseItemType == 'text'){
       data.response.text = dataAtCol(row, responseIndex);
     }
     else if (responseItemType == 'image'){
       data.response.url = dataAtCol(row, responseIndex);
-    }
-
-    if (!cueAudioOn() && !responseAudioOn()){
-      data.no_audio = true;
     }
 
     var params = {
@@ -772,7 +477,6 @@ $(document).ready(function(){
   }
 
   function showProgress(){
-    rowCount = validAndSelectedCount();
     $('#upload_count').html('1/' + rowCount);
     $('.import_progress_bar .progress_indicator').width(0);
     $('.importing_items').css({'margin-top':(parseInt($(window).height() / 2) - 90)});
@@ -788,12 +492,8 @@ $(document).ready(function(){
     index = parseInt(index);
     updateProgress(index);
 
-    var row = validAndSelectedRowAt(rowIndex);
     if (error){
-      $('.status', row).html(error);
-    }
-    else {
-      $('.status', row).html('Uploaded!');
+      $('#hints').html(error);
     }
   }
 
@@ -804,17 +504,44 @@ $(document).ready(function(){
     $('.import_progress_bar .progress_indicator').width(progress * progWidth);
   }
 
-  function setFields(json){
-    self.fields = $.parseJSON(json.replace(/&quot;/g,'"'))
-    console.log(self.fields)
+  function setFields(fields){
+    self.fields = fields;
+    console.log(self.fields);
+  }
+
+  function setBody(body){
+    self.body = body;
   }
 
   Cerego = {
     DataLoader:{
       initialize:initialize,
       setFields: setFields,
-      fields:[]
+      setBody: setBody,
+      fields:[],
+      body:[]
     }
   }
   var self = Cerego.DataLoader;
+
+  console.log("adding event listener");
+  window.addEventListener('message',function(event) {
+  	// if(event.origin !== 'https://davidwalsh.name') return;
+  	console.log('message received:  ' + event.data,event);
+    if (event.data.table_data != null) {
+      Cerego.DataLoader.setFields(event.data.table_data.header);
+      Cerego.DataLoader.setBody(event.data.table_data.body);
+    }
+  	// event.source.postMessage('holla back youngin!',event.origin);
+  },false);
+
+  // chrome.runtime.onMessage.addListener(function (msg, sender) {
+  //   // First, validate the message's structure
+  //   if ((msg.from === 'table_loader') && (msg.subject === 'setFields')) {
+  //     // Enable the page-action for the requesting tab
+  //     console.log("i got yo wow wow");
+  //     Cerego.DataLoader.setFields(msg.data);
+  //   }
+  // });
+
 });

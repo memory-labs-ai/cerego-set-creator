@@ -12,8 +12,3 @@ chrome.runtime.onInstalled.addListener(function() {
     }]);
   });
 });
-// chrome.browserAction.onClicked.addListener(function(tab) {
-//   chrome.tabs.executeScript(null, {file: "jquery.js"});
-//   chrome.tabs.executeScript(null, {file: "table_loader.js"});
-//   chrome.tabs.executeScript(null, {file: "data_loader.js"});
-// })
