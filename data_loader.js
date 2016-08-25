@@ -114,7 +114,7 @@ $(document).ready(function(){
 
 
   var cueItemType, responseItemType, rowIndex, rowCount, cueIndex, responseIndex, annotationIndex,
-      hoverTimeout, uploadCancelled, coursePath, studyPath;
+      hoverTimeout, uploadCancelled, coursePath, outputPath;
   var COLUMN_OFFSET = 2,                // two extra fields added for utility
       TRUNCATE_BEFORE_DISPLAY = false,  // will hit our server to truncate article sentences before displaying in the table
       ARTICLE_SENTENCE_COUNT = 3,       // number of sentences in a freebase article to truncate to.
@@ -639,7 +639,7 @@ $(document).ready(function(){
   }
 
   function courseCreated(set) {
-    studyPath = "https://cerego.com/sets/" + set.id;
+    outputPath = "https://cerego.com/create/sets/" + set.id;
     uploadItems(set);
   }
 
@@ -765,7 +765,7 @@ $(document).ready(function(){
     $('#create_course').addClass('disabled');
 
     setTimeout(function(){
-      $('#course_link .top').attr('href', studyPath);
+      $('#course_link .top').attr('href', outputPath);
       hideProgress();
       $('#course_link').slideDown(500);
     }, 1000)
