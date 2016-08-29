@@ -308,7 +308,7 @@ label.block {
 
 .set_creation_tab.active {
     color: #7ab72d;
-    border-bottom: 1px solid #fff
+    border-bottom: 1px solid #efefef
 }
 
 .set_creation_details {

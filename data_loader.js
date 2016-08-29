@@ -166,7 +166,21 @@ $(document).ready(function(){
   }
 
   function initializeItemCountSelector(){
-    rowCount = 10;
+    options = [self.body.length];
+    if(self.body.length>50){
+      options = [10,20,50];
+    } else if(self.body.length>20){
+      options = [10,20,self.body.length];
+    } else if(self.body.length>10){
+      options = [10,self.body.length];
+    }
+    rowCount = options[0];
+    var optionsAsString = "";
+    for(var i = 0; i < options.length; i++) {
+        optionsAsString += "<option value='" + options[i] + "'>" + options[i] + "</option>";
+    }
+    console.log(optionsAsString);
+    $("#cerego_max_count").append( optionsAsString );
     $("#cerego_max_count").change(function(val){
       rowCount = val;
     });
@@ -513,35 +527,35 @@ $(document).ready(function(){
     self.body = body;
   }
 
+  function closeSetCreator(){
+    $("#cerego_track_tables").attr("status", "off").html("Start table highlight");
+    $(document).unbind("mouseover.tables"), $("body").css("cursor", "default");
+    return $("#cerego_overlay").remove();
+  }
+
   Cerego = {
     DataLoader:{
       initialize:initialize,
       setFields: setFields,
       setBody: setBody,
       fields:[],
-      body:[]
+      body:[],
+      closeSetCreator: closeSetCreator
     }
   }
   var self = Cerego.DataLoader;
 
-  console.log("adding event listener");
   window.addEventListener('message',function(event) {
-  	// if(event.origin !== 'https://davidwalsh.name') return;
   	console.log('message received:  ' + event.data,event);
     if (event.data.table_data != null) {
       Cerego.DataLoader.setFields(event.data.table_data.header);
       Cerego.DataLoader.setBody(event.data.table_data.body);
+      Cerego.DataLoader.initialize();
+      $("#cerego.bookmarklet_window .iframe_loading").remove();
+      $("#cerego.bookmarklet_window loading").remove();
+      $("#cerego.bookmarklet_window").removeClass("loading");
+      $("#cerego.bookmarklet_window .header").removeClass("hidden");
     }
-  	// event.source.postMessage('holla back youngin!',event.origin);
   },false);
-
-  // chrome.runtime.onMessage.addListener(function (msg, sender) {
-  //   // First, validate the message's structure
-  //   if ((msg.from === 'table_loader') && (msg.subject === 'setFields')) {
-  //     // Enable the page-action for the requesting tab
-  //     console.log("i got yo wow wow");
-  //     Cerego.DataLoader.setFields(msg.data);
-  //   }
-  // });
 
 });

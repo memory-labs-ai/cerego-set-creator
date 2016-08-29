@@ -5,12 +5,15 @@
 }
 
 #cerego_overlay {
+    height: 100%;
     background: none repeat scroll 0 0 #efefef;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
 }
 
 #cerego_set_creator * {
@@ -88,40 +91,24 @@
     margin: 6px
 }
 
-#cerego_set_creator.bookmarklet_window .site-header--logo {
-    position: absolute;
+#cerego.bookmarklet_window .site-header--logo {
     display: block;
     top: 3px;
     left: 10px;
-    width: 121px;
-    height: 27px
+    width: 128px;
+    height: 32px
 }
 
-#cerego_set_creator .site-header--logo {
+#cerego .site-header--logo {
     width: 121px
 }
 
-#cerego_set_creator .site-header--logo-htext {
-    margin-top: 3px
-}
-
-#cerego_set_creator.bookmarklet_window .site-header--logo-icon,
-#cerego_set_creator .site-header--logo-icon {
-    position: absolute;
-    width: 41px;
-    height: 27px;
-    left: 18px;
-    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/logos-sebf4eac582-fb1459e34e8604c7a322cda936533fa8.png) 0 -330px
-}
-
-#cerego_set_creator.bookmarklet_window .site-header--logo-htext,
-#cerego_set_creator .site-header--logo-htext {
-    position: absolute;
-    width: 80px;
-    height: 22px;
-    left: 69px;
-    top: 3px;
-    background: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/logos-sebf4eac582-fb1459e34e8604c7a322cda936533fa8.png) 0 -1119px
+#cerego.bookmarklet_window .site-header--logo-icon,
+#cerego .site-header--logo-icon {
+    height: 32px;
+    width: 128px;
+    background-size: cover;
+    background-image: url(https://d20xmthmiftc1y.cloudfront.net/_assets/v2/logos/logo-black-2x-f1522b3f4d6f379cec390a639ec710de77206ee774b8e458b9215a79d74c97eb.png);
 }
 
 #cerego_set_creator a {
@@ -202,8 +189,7 @@
     color: #F00
 }
 
-#cerego_set_creator .toolbar_close {
-    position: absolute;
+#cerego .close {
     right: 10px;
     width: 25px;
     height: 16px;
@@ -249,7 +235,7 @@
     padding: 4px
 }
 
-#cerego_set_creator.bookmarklet_window .header .close {
+#cerego.bookmarklet_window .header .close {
     float: right;
     width: 25px;
     height: 16px;
@@ -272,7 +258,6 @@
 }
 
 #cerego_set_creator.bookmarklet_window .iframe_loading {
-    position: absolute;
     top: 0;
     left: 0;
     width: 960px;

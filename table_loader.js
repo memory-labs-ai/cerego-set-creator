@@ -4,7 +4,7 @@
     window.Cerego || (window.Cerego = {}), showBookmarkletWindow = function(settings, callback) {
         untrackTables();
         var height, html, innerHeightOffset, left;
-        return $("#cerego_overlay").remove(), html = '<div id="cerego_overlay"><div id="cerego" class="bookmarklet_window loading"><div class="header clearfix"><a class="close" onclick="CeregoTableloader.closeBookmarklet()"></a><a href="http://cerego.com" class="site-header--logo" target: "_self"><span class="site-header--logo-icon"></span><span class="site-header--logo-htext"></span></a><h1 class="site-header">' + (settings.windowTitle || "") + '</h1></div><div class="iframe_loading"><p>Loading data</p><span></span></div><div id="cerego-creator"></div></div></div>',
+        return $("#cerego_overlay").remove(), html = '<div id="cerego_overlay"><div id="cerego" class="bookmarklet_window loading"><div class="header clearfix"><a class="close" onclick="Cerego.DataLoader.closeSetCreator()"></a><a href="http://cerego.com" class="site-header--logo" target: "_self"><div class="site-header--logo-icon"></div></a><h1 class="site-header">' + (settings.windowTitle || "") + '</h1></div><div class="iframe_loading"><p>Loading data</p><span></span></div><div id="cerego-creator"></div></div></div>',
         $(document.body).append(html), left = ($(window).width() - $("#cerego.bookmarklet_window").width()) / 2,
         height = $(window).height() - 60, innerHeightOffset = 70, $("#cerego.bookmarklet_window").css({
             left:left,
@@ -19,28 +19,7 @@
         $('#cerego-creator').load(chrome.extension.getURL("creator.html")),
         $("#cerego.bookmarklet_window").hide().fadeIn(200, function() {
 
-            // var iframe, key, parameters, ref, value;
-          // parameters = "", ref = settings.data;
-          // for (key in ref) value = ref[key], parameters += '<input type="hidden" name="' + key + '" value="' + encodeURIComponent(value) + '" />';
           window.postMessage(settings, "*")
-          // chrome.runtime.sendMessage({
-          //   from:    'table_loader',
-          //   subject: 'sendMessage',
-          //   data: set
-          // });
-          // $(document).ready(function(){
-          //   Cerego.DataLoader.setFields("[{\&quot;field_name\&quot;:\&quot;Breed\&quot;,\&quot;field_index\&quot;:0,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;Origin\&quot;,\&quot;field_index\&quot;:1,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;Fédération Cynologique Internationale[3]\&quot;,\&quot;field_index\&quot;:2,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;American Kennel Club[4]\&quot;,\&quot;field_index\&quot;:3,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;Australian National Kennel Council[5]\&quot;,\&quot;field_index\&quot;:4,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;Canadian Kennel Club[6]\&quot;,\&quot;field_index\&quot;:5,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;The Kennel Club[7]\&quot;,\&quot;field_index\&quot;:6,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;New Zealand Kennel Club[8]\&quot;,\&quot;field_index\&quot;:7,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;United Kennel Club[9]\&quot;,\&quot;field_index\&quot;:8,\&quot;item_type\&quot;:\&quot;text\&quot;},{\&quot;field_name\&quot;:\&quot;Image\&quot;,\&quot;field_index\&quot;:9,\&quot;item_type\&quot;:\&quot;image\&quot;},{\&quot;field_name\&quot;:\&quot;Image\&quot;,\&quot;field_index\&quot;:10,\&quot;item_type\&quot;:\&quot;text\&quot;}]")
-          //   Cerego.DataLoader.initialize();
-          // });
-
-          // console.log(parameters)
-            // return $("body").append('<form id="bookmarklet_post_form" method="post" action="https://cerego.com/bookmarklet/parse" target="bookmarklet_iframe">' + parameters + "</form>"),
-            // $("#bookmarklet_post_form").submit().remove(), iframe = $("#cerego #bookmarklet_iframe"),
-            // iframe.hide(), iframe.load(function() {
-            //     return $("#cerego.bookmarklet_window .iframe_loading").remove(), $("#cerego.bookmarklet_window loading").remove(),
-            //     $("#cerego.bookmarklet_window").removeClass("loading"), $("#cerego.bookmarklet_window .header").removeClass("hidden"),
-            //     iframe.fadeIn(100, callback);
-            // });
         }), !1;
     }, parseTableHeaders = function(selector, table) {
         var tableHeaders;
@@ -59,7 +38,7 @@
             var row, rowData;
             return row = $(this), rowData = [], $("td", row).each(function() {
                 return cleanCellContent($(this)), $("img", this).length > 0 ? rowData.push({
-                    img:$("img", this).attr("src"),
+                    img:getFullImageUrl($("img", this).attr("src")),
                     text:$(this).text()
                 }) :rowData.push({
                     text:$(this).text()
@@ -73,6 +52,31 @@
             source_url:location.href,
             table_data:tableData
         }, showBookmarkletWindow(settings);
+    }, getFullImageUrl = function(img) {
+      if(img.match(/wikipedia\//)) {
+        // # get the full image url
+        // # if jpg|gig|png|jpeg
+        // # the wikipedia thumbnail format is:
+        // #   http://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Affenpinscher.jpg/100px-Affenpinscher.jpg
+        // #   => strip out the thumb path and get the original path
+        // #   http://upload.wikimedia.org/wikipedia/commons/1/17/Affenpinscher.jpg
+        // #
+        // # if svg, the wikipedia thumbnail format is:
+        // #   http://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Flag_of_Illinois.svg/51px-Flag_of_Illinois.svg.png
+        // #   => we want to force their transcoder to give us 400px wide images:
+        // #   http://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Flag_of_Illinois.svg/400px-Flag_of_Illinois.svg.png
+        if(img.match('/commons/thumb')){
+          if(img.match(/\.(jpg|png|gif|jpeg)\/(.+?)px-/)) {
+            img.replace('/commons/thumb/', '/commons/');
+          } else if(img.match(/\.(svg)\/(.+?)px-/)){
+            img.replace(/\.(svg)\/(.+?)px-/, ".\\1/400px-");
+          }
+        }
+        if(!img.match(/^http/)){
+          img = 'http:' + img;
+        }
+      }
+      return img;
     }, getFirstParentTable = function(event) {
         var tables, target;
         return target = event.target || event.srcElement, tables = $(target).parents("table"),
@@ -82,7 +86,6 @@
         return $("#cerego_track_tables").attr("status", "on").html("Stop table highlight"),
         $("body").css("cursor", "pointer"), trackedTable = null, previousBorderCSS = null,
         $(document).bind("mouseover.tables", function(event) {
-            console.log("tracking again");
             return trackedTable = getFirstParentTable(event), trackedTable.length > 0 ? (previousBorderCSS = trackedTable.css("border"),
             trackedTable.css({
                 border:"2px solid red"
@@ -108,11 +111,3 @@
 }).call(this);
 
 CeregoTableLoader.trackTables();
-console.log("loaded");
-// window.addEventListener()
-//  onclick="Cerego.Tableloader.toggleTableTracking()"
-
-//add button listeners after dom is loaded
-// document.addEventListener('DOMContentLoaded', function () {
-//   document.getElementById('cerego_track_tables').addEventListener('click', CeregoTableLoader.toggleTableTracking);
-// });
