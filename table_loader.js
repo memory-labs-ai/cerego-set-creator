@@ -67,13 +67,19 @@
         // #   http://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Flag_of_Illinois.svg/400px-Flag_of_Illinois.svg.png
         if(img.match('/commons/thumb')){
           if(img.match(/\.(jpg|png|gif|jpeg)\/(.+?)px-/)) {
-            img.replace('/commons/thumb/', '/commons/');
+            img = img.replace('/commons/thumb/', '/commons/');
+            img = img.replace(/\/(?=[^/]*$).*/, "")
           } else if(img.match(/\.(svg)\/(.+?)px-/)){
-            img.replace(/\.(svg)\/(.+?)px-/, ".\\1/400px-");
+            img = img.replace(/\.(svg)\/(.+?)px-/, ".\\1/400px-");
           }
         }
         if(!img.match(/^http/)){
           img = 'http:' + img;
+        }
+        if(!img.match(/^https/)){
+          console.log(img);
+          img = img.replace('http', 'https');
+          console.log(img);
         }
       }
       return img;

@@ -1,7 +1,7 @@
 {
   "name": "Cerego Set Creator",
   "description": "Create Cerego sets from HTML tables",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "permissions": [
     "activeTab",
     "declarativeContent",
